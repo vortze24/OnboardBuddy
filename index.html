@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OnboardBuddy – Teman 30 Hari Pertamamu</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50:  "#eff6ff",
+                100: "#dbeafe",
+                500: "#3b82f6",
+                600: "#2563eb",
+                700: "#1d4ed8",
+              },
+              accent: {
+                400: "#fb923c",
+                500: "#f97316",
+                600: "#ea580c",
+              },
+            },
+            fontFamily: {
+              sans: ["Inter", "system-ui", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+
+    <!-- ========== NAVBAR ========== -->
+    <header class="bg-brand-600 shadow-md sticky top-0 z-50">
+      <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center shadow">
+            <span class="text-brand-600 font-bold text-lg leading-none">O</span>
+          </div>
+          <span class="text-white font-bold text-xl tracking-tight">OnboardBuddy</span>
+        </div>
+        <span class="text-brand-100 text-sm hidden sm:block">🎉 30 Hari Pertama Lebih Mudah</span>
+      </div>
+    </header>
+
+    <!-- ========== HERO / WELCOME BANNER ========== -->
+    <section class="bg-gradient-to-br from-brand-600 to-brand-700 text-white py-10 px-4">
+      <div class="max-w-5xl mx-auto">
+        <h1 class="text-2xl sm:text-3xl font-bold mb-1">Selamat Datang! 👋</h1>
+        <p class="text-brand-100 text-sm sm:text-base mb-4 max-w-xl">
+          Ini adalah panduan onboardingmu. Selesaikan setiap tugas dan jadikan 30 hari pertama sebagai fondasi kariermu.
+        </p>
+
+        <!-- Day X of 30 Tracker -->
+        <div id="day-tracker" class="inline-flex items-center gap-2 bg-white/15 border border-white/25 rounded-xl px-4 py-2 mb-5 text-sm">
+          <span class="text-xl leading-none">📆</span>
+          <span id="day-tracker-text" class="font-medium text-white">Menghitung hari…</span>
+          <button
+            id="reset-start-date"
+            class="ml-2 text-xs text-white/60 hover:text-white underline underline-offset-2 transition-colors"
+            title="Reset tanggal mulai onboarding"
+          >reset</button>
+        </div>
+
+        <!-- Progress Card -->
+        <div class="bg-white/10 backdrop-blur rounded-2xl p-5 max-w-lg">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-white">Progress Onboarding</span>
+            <span id="progress-label" class="text-sm font-bold text-accent-400">0%</span>
+          </div>
+          <div class="w-full bg-white/20 rounded-full h-3 overflow-hidden">
+            <div
+              id="progress-bar"
+              class="h-3 rounded-full bg-accent-400 progress-bar-fill"
+              style="width: 0%"
+            ></div>
+          </div>
+          <p id="progress-summary" class="text-xs text-brand-100 mt-2">0 dari 0 tugas selesai</p>
+          <!-- Congratulation message (hidden until 100%) -->
+          <div id="congrats-msg" class="hidden mt-3 bg-white/20 rounded-xl px-3 py-2 text-xs font-medium text-white flex items-center gap-2">
+            🎉 Luar biasa! Kamu telah menyelesaikan semua tugas onboarding. Selamat bergabung!
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <main class="max-w-5xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- ===== LEFT / MAIN COLUMN: Checklist ===== -->
+      <section class="lg:col-span-2 flex flex-col gap-6">
+
+        <!-- Add Task Card -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+          <h2 class="text-base font-semibold text-slate-700 mb-4">➕ Tambah Tugas Baru</h2>
+          <form id="task-form" class="flex flex-col sm:flex-row gap-3">
+            <input
+              id="task-input"
+              type="text"
+              placeholder="Tulis tugas onboarding…"
+              maxlength="120"
+              class="flex-1 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition"
+            />
+            <button
+              type="submit"
+              class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-sm"
+            >
+              Tambah
+            </button>
+          </form>
+        </div>
+
+        <!-- Task List Card -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+            <h2 class="text-base font-semibold text-slate-700">📋 Checklist Onboarding</h2>
+
+            <!-- Filter Buttons -->
+            <div class="flex gap-2" role="group" aria-label="Filter tugas">
+              <button data-filter="all"       class="filter-btn active-filter">Semua</button>
+              <button data-filter="pending"   class="filter-btn">Belum</button>
+              <button data-filter="completed" class="filter-btn">Selesai</button>
+            </div>
+          </div>
+
+          <!-- Task List -->
+          <ul id="task-list" class="flex flex-col gap-3">
+            <!-- Tasks are injected here by JS -->
+          </ul>
+
+          <!-- Empty State -->
+          <div id="empty-state" class="hidden text-center py-10 text-slate-400">
+            <p class="text-4xl mb-2">📭</p>
+            <p id="empty-state-text" class="text-sm">Belum ada tugas di kategori ini.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== RIGHT COLUMN: Buddy Chat + Mentor ===== -->
+      <aside class="flex flex-col gap-6">
+
+        <!-- Tanya Buddy Chat -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex flex-col">
+          <h2 class="text-base font-semibold text-slate-700 mb-1">💬 Tanya Buddy</h2>
+          <p class="text-xs text-slate-400 mb-3">Tanyakan seputar proses kerja, absen, cuti, dan lainnya.</p>
+
+          <!-- Quick Question Buttons -->
+          <div class="flex flex-wrap gap-1.5 mb-3" aria-label="Pertanyaan cepat">
+            <button class="quick-q-btn" data-q="Cara absen?">⏰ Cara absen</button>
+            <button class="quick-q-btn" data-q="Cara ajukan cuti?">🌴 Ajukan cuti</button>
+            <button class="quick-q-btn" data-q="Akses WiFi?">📶 Akses WiFi</button>
+          </div>
+
+          <!-- Chat Display -->
+          <div
+            id="chat-box"
+            class="bg-slate-50 rounded-xl p-3 flex flex-col gap-3 overflow-y-auto mb-4 chat-box"
+            aria-live="polite"
+          >
+            <!-- Initial greeting bubble -->
+            <div class="buddy-bubble">
+              Halo! Saya Buddy 👋 Tanyakan apa saja seputar onboarding. Contoh: "Cara absen?", "Minta cuti?", "Akses WiFi?"
+            </div>
+          </div>
+
+          <!-- Chat Input -->
+          <form id="chat-form" class="flex gap-2">
+            <input
+              id="chat-input"
+              type="text"
+              placeholder="Ketik pertanyaanmu…"
+              class="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition"
+            />
+            <button
+              type="submit"
+              class="bg-accent-500 hover:bg-accent-600 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors shadow-sm"
+            >
+              Kirim
+            </button>
+          </form>
+        </div>
+
+        <!-- Mentor Profile Card -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+          <h2 class="text-base font-semibold text-slate-700 mb-4">🧑‍💼 Mentor Kamu</h2>
+          <div class="flex items-center gap-4 mb-4">
+            <!-- Avatar placeholder -->
+            <div class="w-14 h-14 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-bold text-xl flex-shrink-0">
+              RD
+            </div>
+            <div>
+              <p class="font-semibold text-slate-800">Rizky Dermawan</p>
+              <p class="text-xs text-slate-500">Senior Product Manager</p>
+              <span class="inline-block mt-1 text-xs bg-green-100 text-green-700 rounded-full px-2 py-0.5 font-medium">● Tersedia</span>
+            </div>
+          </div>
+          <p class="text-xs text-slate-500 mb-4 leading-relaxed">
+            Rizky akan membimbing kamu selama masa onboarding. Jangan ragu untuk bertanya!
+          </p>
+          <button
+            id="schedule-btn"
+            class="w-full bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors shadow-sm"
+          >
+            📅 Jadwalkan Sesi
+          </button>
+        </div>
+
+      </aside>
+    </main>
+
+    <!-- ========== EDIT MODAL ========== -->
+    <div
+      id="edit-modal"
+      class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+      <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 animate-fadeIn">
+        <h3 id="modal-title" class="text-base font-semibold text-slate-800 mb-4">✏️ Edit Tugas</h3>
+        <input
+          id="edit-input"
+          type="text"
+          maxlength="120"
+          class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition mb-5"
+        />
+        <div class="flex gap-3 justify-end">
+          <button
+            id="modal-cancel"
+            class="px-5 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 border border-slate-200 rounded-xl hover:bg-slate-50 transition"
+          >
+            Batal
+          </button>
+          <button
+            id="modal-save"
+            class="px-5 py-2 text-sm font-semibold bg-brand-600 hover:bg-brand-700 text-white rounded-xl transition-colors shadow-sm"
+          >
+            Simpan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== DELETE CONFIRM MODAL ========== -->
+    <div
+      id="delete-modal"
+      class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="delete-modal-title"
+    >
+      <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 animate-fadeIn">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-9 h-9 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0">
+            <span class="text-lg">🗑️</span>
+          </div>
+          <h3 id="delete-modal-title" class="text-base font-semibold text-slate-800">Hapus Tugas?</h3>
+        </div>
+        <p id="delete-modal-text" class="text-sm text-slate-500 mb-6 leading-relaxed pl-12">
+          Tindakan ini tidak bisa dibatalkan.
+        </p>
+        <div class="flex gap-3 justify-end">
+          <button
+            id="delete-cancel"
+            class="px-5 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 border border-slate-200 rounded-xl hover:bg-slate-50 transition"
+          >
+            Batal
+          </button>
+          <button
+            id="delete-confirm"
+            class="px-5 py-2 text-sm font-semibold bg-red-500 hover:bg-red-600 text-white rounded-xl transition-colors shadow-sm"
+          >
+            Ya, Hapus
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== SCHEDULE SESSION MODAL ========== -->
+    <div
+      id="schedule-modal"
+      class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="schedule-modal-title"
+    >
+      <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 animate-fadeIn">
+        <h3 id="schedule-modal-title" class="text-base font-semibold text-slate-800 mb-1">
+          📅 Jadwalkan Sesi dengan Mentor
+        </h3>
+        <p class="text-xs text-slate-400 mb-5">Pilih tanggal dan jam yang sesuai dengan jadwalmu.</p>
+
+        <!-- Date picker -->
+        <div class="mb-4">
+          <label for="schedule-date" class="block text-xs font-medium text-slate-600 mb-1.5">
+            Tanggal
+          </label>
+          <input
+            id="schedule-date"
+            type="date"
+            class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition"
+          />
+        </div>
+
+        <!-- Time picker -->
+        <div class="mb-6">
+          <label for="schedule-time" class="block text-xs font-medium text-slate-600 mb-1.5">
+            Jam
+          </label>
+          <select
+            id="schedule-time"
+            class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition bg-white"
+          >
+            <option value="">-- Pilih jam --</option>
+            <option value="08:00">08:00 – Pagi</option>
+            <option value="09:00">09:00 – Pagi</option>
+            <option value="10:00">10:00 – Pagi</option>
+            <option value="11:00">11:00 – Pagi</option>
+            <option value="13:00">13:00 – Siang</option>
+            <option value="14:00">14:00 – Siang</option>
+            <option value="15:00">15:00 – Sore</option>
+            <option value="16:00">16:00 – Sore</option>
+          </select>
+        </div>
+
+        <div class="flex gap-3 justify-end">
+          <button
+            id="schedule-cancel"
+            class="px-5 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 border border-slate-200 rounded-xl hover:bg-slate-50 transition"
+          >
+            Batal
+          </button>
+          <button
+            id="schedule-confirm"
+            class="px-5 py-2 text-sm font-semibold bg-brand-600 hover:bg-brand-700 text-white rounded-xl transition-colors shadow-sm"
+          >
+            Konfirmasi Sesi
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== TOAST NOTIFICATION ========== -->
+    <div
+      id="toast"
+      class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-800 text-white text-sm px-5 py-3 rounded-xl shadow-lg opacity-0 pointer-events-none transition-opacity duration-300"
+      aria-live="polite"
+    ></div>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="text-center text-xs text-slate-400 py-6 border-t border-slate-100 mt-4">
+      © 2026 OnboardBuddy · Dibuat dengan ❤️ untuk karyawan baru
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
